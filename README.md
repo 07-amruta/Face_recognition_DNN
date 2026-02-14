@@ -1,264 +1,211 @@
-# Face Recognition using Deep Neural Network (CelebA + FaceNet)
+# 🧠 Face Recognition using Deep Neural Network (FaceNet + CelebA)
 
-## 📌 Project Overview
+A deep learning-based face recognition system that detects faces using **MTCNN**, extracts **512-dimensional face embeddings** using a pretrained **FaceNet (InceptionResnetV1)** model, and performs identity matching using Euclidean distance.
 
-This project implements a **face recognition system using Deep Neural Networks (DNNs)** to identify individuals from facial images. The system processes images from the CelebA dataset, detects faces, extracts deep features using a neural network, and performs identity matching based on similarity measurements.
-
-The primary goal is to demonstrate how deep learning models can learn rich facial representations and enable automated recognition.
-
-This project covers:
-
-* Face detection
-* Deep neural feature extraction
-* Identity matching
-* Unknown identity rejection
+This project demonstrates a complete modern face recognition pipeline using PyTorch.
 
 ---
 
-## 🧠 System Architecture
+## 📌 Project Overview
 
-The recognition pipeline consists of the following stages:
+This system performs:
 
-1. Dataset Loading
-2. Face Detection
-3. Deep Neural Network Feature Extraction
-4. Database Creation
-5. Recognition Decision
-6. Visualization
+* Face Detection (MTCNN)
+* Deep Feature Extraction (FaceNet)
+* Embedding-based Identity Matching
+* Unknown Face Rejection
+* Randomized Testing Demo
+
+The model does not classify faces directly. Instead, it generates **face embeddings** (numerical identity representations) and compares them using similarity metrics.
+
+---
+
+## 🏗️ System Architecture
 
 ```
 Input Image
      ↓
 Face Detection (MTCNN)
      ↓
-Deep Neural Network (FaceNet)
+FaceNet (InceptionResnetV1)
      ↓
-512-D Embedding Vector
+512-D Face Embedding
      ↓
-Distance Comparison
+Euclidean Distance Matching
      ↓
-Identity Match / Unknown
+Match / Unknown
 ```
 
 ---
 
-## ⭐ Role of the Deep Neural Network (Core Component)
+## 📂 Dataset
 
-The **Deep Neural Network is the most important part of the system**.
+This project uses the **CelebA dataset**, which contains over 200,000 face images.
 
-Traditional face recognition relied on handcrafted features (edges, textures, distances between landmarks). These methods struggle under changes in lighting, pose, or expression.
+The dataset is automatically downloaded using `torchvision` when you run the script.
 
-### What the DNN does instead
-
-The FaceNet DNN automatically learns hierarchical representations:
-
-#### Early Layers
-
-* Detect simple patterns
-* Edges
-* Shapes
-* Textures
-
-#### Middle Layers
-
-* Detect facial components
-* Eyes
-* Nose
-* Mouth
-* Contours
-
-#### Deep Layers
-
-* Encode identity-specific features
-* Complex geometry
-* Subtle variations
-* Global structure
+No manual download is required.
 
 ---
 
-### Output of the DNN
+## ⚙️ Installation
 
-The network converts each face into a:
+### 1️⃣ Clone the Repository
 
-## ➤ 512-Dimensional Embedding Vector
-
-This vector:
-
-* Represents identity information
-* Is invariant to lighting/pose
-* Enables comparison between faces
-* Acts as a numerical fingerprint
-
-Example:
-
-```
-Face Image → DNN → [0.21, -1.44, 0.78, ... 512 values]
+```bash
+git clone https://github.com/your-username/dnn-face-recognition.git
+cd face_recognition_dnn
 ```
 
 ---
 
-### Why This Matters
+### 2️⃣ Create Virtual Environment (Recommended)
 
-Because of the DNN:
-
-* Same person → embeddings close together
-* Different people → embeddings far apart
-
-This property makes recognition possible using simple distance metrics.
-
-Without the DNN, recognition accuracy would be extremely poor.
-
----
-
-## 🤖 Deep Learning Models Used
-
-### 1️⃣ MTCNN — Face Detection
-
-Detects and crops facial regions from images.
-
-Purpose:
-
-* Isolate face area
-* Align orientation
-* Remove background noise
-
----
-
-### 2️⃣ FaceNet (InceptionResnetV1) — Deep Neural Network
-
-This is the primary DNN used in the project.
-
-#### Architecture Characteristics
-
-* Deep convolutional neural network
-* Residual connections
-* Trained on millions of faces
-* Learns discriminative embeddings
-
-#### Function in this Project
-
-* Converts face image → feature embedding
-* Enables identity comparison
-* Drives recognition accuracy
-
-This model replaces the need to train a large network from scratch.
-
----
-
-## 📊 Dataset Used — CelebA
-
-* 200,000+ images
-* 10,000+ identities
-* Wide variations in appearance
-
-Used for:
-
-* Database creation
-* Recognition testing
-
-Dataset is downloaded automatically through PyTorch utilities.
-
----
-
-## 🗂️ Database Construction
-
-Steps:
-
-1. Detect face
-2. Run through DNN
-3. Store embedding
-
-This simulates enrolling known individuals in a biometric system.
-
----
-
-## 🎲 Randomized Testing Strategy
-
-To demonstrate realistic behavior:
-
-* 10 images shown per run
-* Up to 5 selected from database
-* Remaining chosen externally
-* Order shuffled
-
-This demonstrates:
-
-* Recognition capability
-* Unknown rejection
-
----
-
-## 📏 Recognition Method
-
-Similarity measured using Euclidean distance:
-
-```
-distance = || embedding_test − embedding_database ||
+```bash
+python -m venv venv
 ```
 
-Decision rule:
+Activate:
 
-* distance < threshold → Known
-* distance ≥ threshold → Unknown
+**Windows**
 
-This shows how DNN embeddings enable simple yet effective matching.
+```bash
+venv\Scripts\activate
+```
+
+**Mac/Linux**
+
+```bash
+source venv/bin/activate
+```
 
 ---
 
-## ▶️ How to Run
+### 3️⃣ Install Required Dependencies
 
-Install:
-
-```
-pip install torch torchvision facenet-pytorch matplotlib
+```bash
+pip install torch torchvision facenet-pytorch matplotlib numpy
 ```
 
-Execute:
-
-```
-python celeba_facenet_demo_random.py
-```
-
-Close each plot window to move to next image.
+If you have a GPU, install the CUDA-enabled version of PyTorch from:
+https://pytorch.org/
 
 ---
 
-## 🎓 Learning Outcomes
+## ▶️ How to Run the Project
 
-This project demonstrates:
+Run:
 
-* Practical application of deep neural networks
-* Feature representation learning
-* Biometric system design
-* Integration of multiple AI components
-* Real-world dataset usage
+```bash
+python facial_recognition_facenet.py
+```
+
+On first run:
+
+* CelebA dataset will download automatically
+* Database embeddings will be generated
+* 10 randomized test images will be shown
+* Up to 5 images will match known identities
+* Remaining images will be classified as unknown
+
+Close each image window to proceed to the next.
 
 ---
 
-## ⚠️ Limitations
+## 🧠 How Recognition Works
 
-* Small identity database
-* No classifier training
-* No persistent storage
-* Limited quantitative evaluation
+1. Faces are detected using **MTCNN**
+2. FaceNet generates a **512-dimensional embedding**
+3. Embeddings are stored in a database
+4. Test embeddings are compared using Euclidean distance
+5. If distance < threshold (1.0), face is recognized
+
+---
+
+## 📁 Project Structure
+
+```
+.
+├── celeba_facenet_demo_random.py
+├── README.md
+└── data/
+    └── celeba/
+```
+
+The `data/` folder is created automatically when the dataset downloads.
+
+---
+
+## 🔍 Key Technologies Used
+
+* **PyTorch** – Deep learning framework
+* **Torchvision** – Dataset and image transforms
+* **facenet-pytorch** – FaceNet & MTCNN implementation
+* **NumPy** – Numerical operations
+* **Matplotlib** – Visualization
+
+---
+
+## 🎯 Features
+
+* Pretrained deep neural network
+* Embedding-based recognition
+* Randomized known/unknown testing
+* GPU support (if available)
+* Fully automated dataset download
+
+---
+
+## 📊 Configuration Parameters
+
+You can modify these values inside the script:
+
+```python
+DATABASE_SIZE = 20
+TOTAL_TEST_IMAGES = 10
+MAX_KNOWN = 5
+THRESHOLD = 1.0
+```
+
+* `DATABASE_SIZE` → number of enrolled identities
+* `TOTAL_TEST_IMAGES` → number of test images shown
+* `MAX_KNOWN` → maximum matching images in demo
+* `THRESHOLD` → recognition sensitivity
 
 ---
 
 ## 🚀 Future Improvements
 
 * Real-time webcam recognition
-* Larger enrollment database
-* SVM/KNN classifier
-* Accuracy metrics
-* GUI interface
-* Model fine-tuning
+* Save/load embedding database
+* Add GUI interface
+* Implement classifier (SVM/KNN)
+* Evaluate accuracy metrics
 
 ---
 
-## 🏁 Conclusion
+## 🎓 Educational Purpose
 
-The project showcases how Deep Neural Networks transform facial images into meaningful numerical representations that enable identity recognition. By leveraging pretrained deep models, the system achieves reliable feature extraction and demonstrates the effectiveness of deep learning in biometric applications.
+This project demonstrates how deep neural networks:
 
-The DNN serves as the foundation of the recognition system, providing robust, invariant features that allow accurate comparison and decision-making.
+* Learn hierarchical visual features
+* Encode facial identity into embeddings
+* Enable scalable biometric recognition systems
+
+It serves as an academic mini-project illustrating modern face recognition pipelines.
+
+---
+
+## 📜 License
+
+This project is for educational purposes only.
+CelebA dataset usage follows its original research license.
+
+---
+
+## 👩‍💻 Author
+
+Amruta Panda
+Deep Learning Mini Project
 
 ---
